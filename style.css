@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  font-family: sans-serif;
+  color: white;
+  text-align: center;
+}
+h1.glow {
+  font-size: 3em;
+  text-shadow: 0 0 10px #fff, 0 0 20px #00f, 0 0 30px #00f;
+}
+.subtitle {
+  font-size: 1.2em;
+  opacity: 0.8;
+}
+.tagline {
+  font-size: 1em;
+  margin-top: -10px;
+}
