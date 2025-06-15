@@ -1,0 +1,63 @@
+# .github/workflows/deploy.yml
+
+name: 🚀 Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # or change to your default branch
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  BUILD_DIR: dist # Change this to 'build' or '.' for plain HTML
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: ⏬ Checkout Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Set up Node (only needed if you have a build step)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 📦 Install Dependencies (skip if not needed)
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          fi
+
+      - name: 🛠️ Build Site (skip if pure HTML)
+        run: |
+          if [ -f package.json ]; then
+            npm run build
+          fi
+
+      - name: ⚙️ Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: 📤 Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.BUILD_DIR }}
+
+      - name: 🚀 Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+        with:
+          clean: true
